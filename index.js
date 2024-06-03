@@ -31,8 +31,8 @@ app.use("/",userRouter)
 app.use("/register",userRouter)
 app.use("/login",userRouter)
 app.use("/home",userRouter)
-app.use("/home/:search",userRouter)//addeded new
+app.use("/home/:search",userRouter)
+app.use("/forgotpassword",userRouter)
 app.use("/createOrder",userRouter)
-app.use("/verifyPayment",userRouter)
 
 app.listen(port,()=>{console.log("server started at the port",port)})

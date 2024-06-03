@@ -1,3 +1,4 @@
+import { ReturnDocument } from 'mongodb';
 import {client} from './index.js';
 
 
@@ -42,5 +43,8 @@ export async function booking(newdata){
 }
 export async function payment(receipt){
   return  await client.db("hotelbooking").collection("payment").insertOne({receipt});
+}
+export async function resetpassword(email,Password){
+  return await client.db("hotelbooking").collection("register").findOneAndUpdate({Email:email},{$set:{Password:Password}},{ReturnDocument:'after'});
 }
 
