@@ -32,27 +32,9 @@ router.post("/register", async (req, res) => {
   }
 });
 router.post("/login", async (req, res) => {
-  const { Email, Password, captcha } = req.body;
+  const { Email, Password } = req.body;
 
   try {
-    // Verify the ReCAPTCHA
-    const capResponse = await axios.post(
-      "https://www.google.com/recaptcha/api/siteverify",
-      null,
-      {
-        params: {
-          secret: "6LdWJ-4pAAAAAGw7CZm4_WndhJQbOHWhoP0VBXnk",
-          response: captcha,
-        },
-      }
-    );
-
-    if (!capResponse.data.success) {
-      return res.status(400).json({
-        success: false,
-        message: "CAPTCHA verification failed!",
-      });
-    }
 
     // Check for user
     const user = await login(Email);
