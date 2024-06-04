@@ -8,7 +8,6 @@ import {
   searchHotels,
   checkavailability,
   resetpassword,
-  findhotel,
 } from "../mongo.js";
 import { hashing, comparing } from "../helper.js";
 import axios from "axios";
