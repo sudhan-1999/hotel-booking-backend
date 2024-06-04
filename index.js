@@ -4,7 +4,6 @@ import { MongoClient } from 'mongodb';
 import * as dotenv from "dotenv";
 dotenv.config();
 import userRouter from './Routes/user.js';
-import Razorpay from 'razorpay';
 
 
 
