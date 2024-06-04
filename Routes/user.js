@@ -8,6 +8,7 @@ import {
   searchHotels,
   checkavailability,
   resetpassword,
+  findhotel,
 } from "../mongo.js";
 import { hashing, comparing } from "../helper.js";
 import axios from "axios";
@@ -18,7 +19,6 @@ router.post("/register", async (req, res) => {
   try {
     const { Name, Email, Password } = req.body;
     const registereduser = await finduser(Email);
-    console.log(registereduser);
 
     if (registereduser) {
       res.status(409).send("User Already exists");
@@ -29,7 +29,6 @@ router.post("/register", async (req, res) => {
     await registeruser(newdata);
     res.status(201).send("Register successfull");
   } catch (err) {
-    console.log(err);
     res.status(500).send("Internal server Error");
   }
 });
@@ -81,7 +80,6 @@ router.post("/login", async (req, res) => {
       });
     }
   } catch (err) {
-    console.error(err);
     return res.status(500).json({
       success: false,
       message: "Internal Server Error!",
@@ -91,11 +89,9 @@ router.post("/login", async (req, res) => {
 
 router.post("/forgotpassword", async (req, res) => {
   const { email, Password } = req.body;
-  console.log(email, Password);
   try {
     const hashpass = await hashing(Password);
     const registereduser = await resetpassword(email, hashpass);
-    console.log(registereduser);
     if (registereduser) {
       res.send("Password reset Successful");
       return;
@@ -114,12 +110,10 @@ router.get("/home", async (req, res) => {
 });
 router.get("/home/:search", async (req, res) => {
   const { search } = req.params;
-  console.error(search);
   try {
     const results = await searchHotels(search);
     res.send(results);
   } catch (error) {
-    console.error("Error searching for hotels:", error);
     res.status(500).send("Internal Server Error");
   }
 });
@@ -128,25 +122,26 @@ router.post("/bookings/room/:_id", async (req, res) => {
   try {
     const { _id } = req.params;
     const { checkin, checkout } = req.body;
+     
+    
     const newdata = {
       _id,
-      checkin: new Date(checkin),
-      checkout: new Date(checkout),
+      checkin: checkin,
+      checkout: checkout,
     };
+    
 
-    console.log("New data to be booked:", newdata);
 
     const finds = await checkavailability(newdata);
-    console.log("Existing bookings found:", finds);
 
     let roomAlreadyBooked = false;
 
     for (const find of finds) {
-      const existingCheckin = new Date(find.checkin);
-      const existingCheckout = new Date(find.checkout);
+      const existingCheckin = find.checkin;
+      const existingCheckout = find.checkout;
 
       if (
-        (_id === find._id &&
+        (_id === find.id &&
           newdata.checkin <= existingCheckout &&
           newdata.checkin >= existingCheckin) ||
         (newdata.checkout <= existingCheckout &&
@@ -158,20 +153,28 @@ router.post("/bookings/room/:_id", async (req, res) => {
         break;
       }
     }
+   
+    const newdatas ={
+      id:newdata._id,
+      checkin:newdata.checkin,
+      checkout:newdata.checkout
+    }
+    
 
     if (roomAlreadyBooked) {
       res
         .status(400)
         .send({ message: "Room already booked for this date and time" });
     } else {
-      const result = booking(newdata);
+      const result = booking(newdatas);
       res.send({ message: "Booking successful", result });
     }
   } catch (error) {
-    console.error("Error in booking:", error);
     res.status(500).send("Internal Server Error");
   }
 });
+  
+
 
 const userRouter = router;
 export default userRouter;
