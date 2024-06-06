@@ -10,9 +10,12 @@ import {
   resetpassword,
 } from "../mongo.js";
 import { hashing, comparing } from "../helper.js";
-import axios from "axios";
 
 const router = express.Router();
+router.get("/",async(req,res)=>{
+  const hotel = await first();
+  res.send(hotel);
+})
 
 router.post("/register", async (req, res) => {
   try {
