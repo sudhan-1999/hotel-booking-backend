@@ -110,7 +110,7 @@ router.post("/bookings/room/:_id", async (req, res) => {
       checkin: checkin,
       checkout: checkout,
     };
-    
+    console.log(newdata)
 
 
     const finds = await checkavailability(newdata);
