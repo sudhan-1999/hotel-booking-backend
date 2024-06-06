@@ -22,10 +22,7 @@ async function creatingconnection(){
 }
 export const client = await creatingconnection();
 
-export const instance = new Razorpay({
-  key_id:'kjklhkb',//need to get from razorpay dsah board
-  key_secret:'jhblh'//need to get from razorpay dsah board
-})
+
 
 app.use("/",userRouter)
 app.use("/register",userRouter)
